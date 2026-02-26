@@ -228,25 +228,14 @@
       const formId = '1FAIpQLSeszs54ky5wmCajTPLFdl0Yyq28dx16gJOzkc8yltwlPI-D0Q';
       const fieldId = 'entry.911896788';
 
-      // Submit silently to Google Forms via hidden iframe
-      const iframe = document.createElement('iframe');
-      iframe.name = 'hidden-iframe';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+      const formData = new FormData();
+      formData.append(fieldId, email);
 
-      const form = document.createElement('form');
-      form.action = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
-      form.method = 'POST';
-      form.target = 'hidden-iframe';
-
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = fieldId;
-      input.value = email;
-      form.appendChild(input);
-
-      document.body.appendChild(form);
-      form.submit();
+      fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse`, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      });
 
       // Show success message
       document.getElementById('form').style.display = 'none';
