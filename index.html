@@ -224,7 +224,32 @@
   <script>
     document.getElementById('form').addEventListener('submit', function(e) {
       e.preventDefault();
-      this.style.display = 'none';
+      const email = document.getElementById('email').value;
+      const formId = '1FAIpQLSeszs54ky5wmCajTPLFdl0Yyq28dx16gJOzkc8yltwlPI-D0Q';
+      const fieldId = 'entry.911896788';
+
+      // Submit silently to Google Forms via hidden iframe
+      const iframe = document.createElement('iframe');
+      iframe.name = 'hidden-iframe';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const form = document.createElement('form');
+      form.action = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
+      form.method = 'POST';
+      form.target = 'hidden-iframe';
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = fieldId;
+      input.value = email;
+      form.appendChild(input);
+
+      document.body.appendChild(form);
+      form.submit();
+
+      // Show success message
+      document.getElementById('form').style.display = 'none';
       const msg = document.getElementById('success');
       msg.style.display = 'block';
       msg.style.animation = 'rise 1s cubic-bezier(0.16,1,0.3,1) forwards';
