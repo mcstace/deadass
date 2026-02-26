@@ -228,14 +228,45 @@
       const formId = '1FAIpQLSeszs54ky5wmCajTPLFdl0Yyq28dx16gJOzkc8yltwlPI-D0Q';
       const fieldId = 'entry.911896788';
 
-      const formData = new FormData();
-      formData.append(fieldId, email);
+      // Create a hidden iframe to receive the response
+      let iframe = document.getElementById('hidden-iframe');
+      if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = 'hidden-iframe';
+        iframe.name = 'hidden-iframe';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      }
 
-      fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse`, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      });
+      // Create a hidden form and submit it into the iframe
+      const hiddenForm = document.createElement('form');
+      hiddenForm.action = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
+      hiddenForm.method = 'POST';
+      hiddenForm.target = 'hidden-iframe';
+      hiddenForm.style.display = 'none';
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = fieldId;
+      input.value = email;
+      hiddenForm.appendChild(input);
+
+      // Required by Google Forms
+      const draftInput = document.createElement('input');
+      draftInput.type = 'hidden';
+      draftInput.name = 'draftResponse';
+      draftInput.value = '[]';
+      hiddenForm.appendChild(draftInput);
+
+      const pageInput = document.createElement('input');
+      pageInput.type = 'hidden';
+      pageInput.name = 'pageHistory';
+      pageInput.value = '0';
+      hiddenForm.appendChild(pageInput);
+
+      document.body.appendChild(hiddenForm);
+      hiddenForm.submit();
+      document.body.removeChild(hiddenForm);
 
       // Show success message
       document.getElementById('form').style.display = 'none';
